@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fbf7f2">
+<title>柳州 48 小时 · 16 家店打卡表（两天路线）</title>
+<meta name="description" content="从抖音「一支凯子」第48集逐帧整理出的柳州 16 家店，按营业时段拆成两天路线，含地图标点与实时定位。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23c2410c'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E柳%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">柳州 · 周末两日 · 吃满 16 家</div>
+    <h1>柳州 <em>48 小时</em><br>16 家店打卡表</h1>
+    <p class="lede">
+      店名来自抖音「一支凯子」第 48 集的口播 + 逐帧字幕识别；
+      地址与营业时段是高德 POI 实时查询后逐家核对的。
+      已按<strong>营业时段</strong>拆成两天，不是按视频顺序硬排。
+    </p>
+    <div class="stats">
+      <div class="stat"><b>16</b><span>个点位</span></div>
+      <div class="stat"><b>2</b><span>天走完</span></div>
+      <div class="stat"><b>3</b><span>个片区</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="verdict">
+    <h2><i>结论</i>两天能搞定，但不能照视频顺序跑</h2>
+    <div class="vrow">
+      <div class="k">可行性</div>
+      <div class="v">能。16 家全部走到，代价是 <b>Day 1 要吃 10 家</b>，而且中午必须回酒店睡一觉 —— 晚上那 4 家全在广雅路，是夜市档。</div>
+    </div>
+    <div class="vrow">
+      <div class="k">硬约束</div>
+      <div class="v">营业时段是错开的：阿玲米粉 14:00 收、民高螺蛳粉 <b>17:30 就打烊</b>、老三摊/芳姐 16:00 才开、快乐麻辣烫 19:00 才开。顺序错了会白跑。</div>
+    </div>
+    <div class="vrow">
+      <div class="k">交通</div>
+      <div class="v">三个片区之间靠打车，一天 3–4 段，单段 8–15 分钟、十几块钱。片区内部全部步行 5–10 分钟。</div>
+    </div>
+    <div class="vrow">
+      <div class="k">吃法</div>
+      <div class="v">三个人分食，每家只点 1–2 样。视频里那 41 样是剪出来的，真按整份点，第二天你会看着羊肉粉发呆。</div>
+    </div>
+    <div class="vrow">
+      <div class="k">返程</div>
+      <div class="v">Day 2 最后两家是"带走吃"的甜品，14:40 喝完木薯羹，<b>15:20 就能上高速</b>。</div>
+    </div>
+    <div class="vrow">
+      <div class="k">砍单</div>
+      <div class="v">Day 1 吃不动就砍掉「一口芋头」和「聚宝烧鸭粉」（两家都是推断点），把韦韦木薯羹挪到 Day 2 走之前喝。这样 Day 1 只剩 8 家，节奏正常很多。</div>
+    </div>
+    <div class="vrow">
+      <div class="k">此刻</div>
+      <div class="v" id="openNow">正在按你打开页面的时间计算…</div>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab on" type="button" data-day="all">两天全览</button>
+    <button class="tab d1" type="button" data-day="1">Day 1</button>
+    <button class="tab d2" type="button" data-day="2">Day 2</button>
+  </nav>
+
+  <div id="route"></div>
+
+  <section class="mapseat" id="mapseat">
+    <h2 class="h2">地图 · 16 个点</h2>
+    <p class="h2sub">点卡片 → 地图飞过去；点标记 → 看地址和高德导航。坐标是打开页面时实时查的，本页不存坐标。</p>
+
+    <div class="mapbar">
+      <button class="tab on mf" type="button" data-f="all">全部</button>
+      <button class="tab mf" type="button" data-f="1">D1</button>
+      <button class="tab mf" type="button" data-f="2">D2</button>
+      <button class="tab" type="button" id="btnFit">铺满</button>
+      <button class="tab" type="button" id="btnSat" data-sat="1">卫星</button>
+      <button class="tab" type="button" id="btnBig">放大</button>
+    </div>
+
+    <div id="map"></div>
+    <div class="mapstat" id="mapstat">正在按店名实时查询坐标…</div>
+  </section>
+
+  <section class="howto">
+    <h3>这表是怎么来的 / 怎么用</h3>
+    <ul>
+      <li><b>店名来源</b>：视频音频全文转写 + 每秒抽帧 OCR（字幕、门头、价目牌）。口播数到 18 站，但只点名 14 家，第 4、11 站剪辑时没保留。</li>
+      <li><b>两个"视频未点名"的点</b>：视频只说了"对面那家烧鸭粉"和"对面买的芋头饼"，我按同商圈唯一对得上的店补的（老牌聚宝烧鸭粉、一口芋头）。<b>红色标签的那两家，去之前先看一眼招牌。</b></li>
+      <li><b>时段</b>：高德 POI 上的营业时间，个别店（烧鸭粉、胖胖唐记）线上没有准确时段，标成"时段未核实"。周末去之前建议电话确认一次。</li>
+      <li><b>定位</b>：卡片里"定位中 → 已定位"是页面在实时查高德。查不到不代表店不存在，点「🧭 导航」直接用高德搜店名。</li>
+      <li><b>停车</b>：广雅路、汪家巷、罗池路都是老巷子，别指望开到门口。停广雅综合市场或五星商圈地下车库，然后走。</li>
+    </ul>
+  </section>
+
+  <footer>
+    数据核对时间 2026-11-02 ｜ 视频：《极限48小时二刷柳州，连着两天吃了18家店》@一支凯子 第 48 集<br>
+    地址与营业时段来自高德开放平台实时查询及本地攻略交叉核对，门店可能搬迁，出发前请再确认一次。
+  </footer>
+
+</main>
+
+<script src="assets/data.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/vendor/leaflet/leaflet.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
